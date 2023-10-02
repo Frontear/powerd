@@ -1,0 +1,27 @@
+#!/bin/sh
+
+AC_DEV="AC"
+AC_ONLINE="/sys/class/power_supply/$AC_DEV/online"
+LAST_VALUE=$(cat $AC_ONLINE)
+
+while true; do
+    # inotifywait events on sysfs are inconsistent across systems.
+    # this check is in place to ensure values _actually_ changed.
+    # even then, this will not work across all systems, so a better
+    # check is needed, a better event driven polling service.
+    inotifywait -qq $AC_ONLINE
+    NEW_VALUE=$(cat $AC_ONLINE)
+
+    if [ $LAST_VALUE -ne $NEW_VALUE ]; then
+        LAST_VALUE=$NEW_VALUE
+
+        case $NEW_VALUE in
+            1)
+                echo "connected"
+                ;;
+            0)
+                echo "disconnected"
+                ;;
+        esac
+    fi
+done
