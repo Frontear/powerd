@@ -1,9 +1,9 @@
 BUILD_DIR=${PWD}/build
 SOURCE_DIR=${PWD}/src
 
-build: ${SOURCE_DIR}/powerd
+build: ${SOURCE_DIR}/main.c
 	mkdir -p ${BUILD_DIR}
-	cp ${SOURCE_DIR}/powerd ${BUILD_DIR}
+	${CC} -o ${BUILD_DIR}/powerd ${SOURCE_DIR}/main.c
 	chmod 0711 ${BUILD_DIR}/powerd
 
 install: build
